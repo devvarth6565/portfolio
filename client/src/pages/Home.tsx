@@ -15,6 +15,7 @@ interface WindowState {
   isOpen: boolean;
   minimized: boolean;
   zIndex: number;
+  props?: any;
 }
 
 export default function Home() {
@@ -43,7 +44,7 @@ export default function Home() {
   }, [startupPlayed]);
 
   // Window Management
-  const openWindow = (id: string, title?: string) => {
+  const openWindow = (id: string, title?: string, props?: any) => {
     setWindows(prev => ({
       ...prev,
       [id]: {
@@ -51,7 +52,8 @@ export default function Home() {
         title: title || prev[id]?.title || 'Window',
         isOpen: true,
         minimized: false,
-        zIndex: Math.max(...Object.values(prev).map(w => w.zIndex), 0) + 1
+        zIndex: Math.max(...Object.values(prev).map(w => w.zIndex), 0) + 1,
+        props
       }
     }));
     setActiveWindowId(id);
@@ -179,7 +181,7 @@ export default function Home() {
   );
 
   // Content for Individual Project Detail
-  const ProjectDetailContent = ({ id }: { id: string }) => {
+  const ProjectDetailContent = ({ id, props }: { id: string, props?: any }) => {
     // If it's a demo project (from dummy data)
     if (id.includes('demo')) {
       return (
@@ -188,7 +190,7 @@ export default function Home() {
             <div className="bg-[#FFFFE1] border border-[#D6DFF7] p-4 mb-6 shadow-sm">
                <p className="text-sm">This is a simulated project because the database might be empty. In a real scenario, this would load data from the API.</p>
             </div>
-            <MediaPlayer title="Demo Project Video" />
+            <MediaPlayer title="Demo Project Video" videoUrl={props?.videoUrl} />
             <div className="mt-6 text-sm text-gray-800">
                <p>This project demonstrates the capabilities of the Windows XP simulation. It features a fully functional window system, taskbar, and start menu.</p>
             </div>
@@ -220,7 +222,7 @@ export default function Home() {
              </div>
              <div>
                 <h3 className="font-bold text-[#1A3866] mb-2 border-b border-gray-300 pb-1">Media</h3>
-                <MediaPlayer videoUrl={project.videoUrl} title={project.title} />
+                <MediaPlayer videoUrl={props?.videoUrl || project.videoUrl} title={project.title} />
              </div>
           </div>
        </div>
@@ -279,7 +281,7 @@ export default function Home() {
              >
                 {win.id === 'computer' && <MyComputerContent />}
                 {win.id === 'documents' && <MyDocumentsContent />}
-                {win.id.startsWith('project-') && <ProjectDetailContent id={win.id} />}
+                {win.id.startsWith('project-') && <ProjectDetailContent id={win.id} props={win.props} />}
              </XPWindow>
            </div>
         ))}

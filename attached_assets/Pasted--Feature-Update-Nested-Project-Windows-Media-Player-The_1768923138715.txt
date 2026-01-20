@@ -1,0 +1,42 @@
+# Feature Update: Nested Project Windows & Media Player
+
+The Desktop and Main Windows are working perfectly. Now, we need to implement the specific **Project Drill-Down** functionality.
+
+## The Interaction Flow
+1.  **Level 1:** User double-clicks "My Documents" (Projects) icon on Desktop.
+    * **Action:** Opens the `ProjectsExplorer` window.
+    * **Content:** Displays a grid of folders (e.g., "AI Persona", "Ecommerce App").
+2.  **Level 2:** User double-clicks a specific **Project Folder** inside that window.
+    * **Action:** Triggers the `WindowManager` to open a NEW, separate window layered *on top* of the Explorer.
+    * **New Window Title:** The name of the project (e.g., "AI Persona - Preview").
+    * **Content:** This new window must contain the **Windows Media Player** component.
+
+## Component Specifications
+
+### 1. The `ProjectDetailWindow` (The Media Player)
+Create a new component that mimics **Windows Media Player 9 (WMP9)**.
+* **Visual Style:**
+    * Background: Dark grey/black for the video area.
+    * Controls Area: Silver gradient bottom bar.
+    * Buttons: Circular "Play/Pause" button in the center, smaller "Stop" and "Volume" buttons.
+    * Seeker Bar: A thin blue progress bar.
+* **Functionality:**
+    * It must receive a `videoSrc` prop.
+    * Use the standard HTML5 `<video>` tag but hide the default browser controls.
+    * Build *custom* React buttons that control the video (Play, Pause, Mute).
+
+### 2. Update `WindowManager` Logic
+Update the `openWindow` function to accept a `payload` or `props` object.
+* *Current:* `openWindow('projects')`
+* *New:* `openWindow('project-detail', { projectId: 1, videoSrc: '/project_video.mp4' })`
+
+### 3. Update `ProjectsExplorer`
+* Map through a list of projects.
+* On double-click of a folder, call:
+    `openWindow('project_detail', { title: project.title, video: project.videoUrl })`
+
+## Asset Requirement
+* Assume the user has uploaded a video file named `project_video.mp4` in the public folder.
+* Use this file as the default source for the video player.
+
+**Task:** Write the code for the `MediaWindow` component and the updated `WindowManager` logic to support this "Window-inside-a-Window" flow.
