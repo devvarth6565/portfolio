@@ -1,0 +1,64 @@
+# Project Role: Senior React Architect & UI Historian
+# Objective: Build a Pixel-Perfect Windows XP Desktop Portfolio (Service Pack 3 Era)
+# Tech Stack: React.js (Vite), Tailwind CSS, Framer Motion
+
+You are building a fully interactive Windows XP simulation. Do not use modern "Flat Design." You must strictly adhere to the 2001 Skeuomorphic aesthetic (glossy, bevels, shadows).
+
+## 1. Asset & Environment Setup (CRITICAL)
+The user has provided specific assets. You must configure the CSS to use them immediately.
+* **Wallpaper:** The user has a file named `wallpaper.jpg`. You must set the global background of the `Desktop` component to:
+    `background-image: url('/wallpaper.jpg');`
+    `background-size: cover;`
+    `background-position: center;`
+* **Audio:** The user has a file named `startup.mp3`. You must create a `useEffect` hook in `App.jsx` to play this sound once upon mounting.
+
+## 2. Visual Design System (The "Luna" Rules)
+* **Typography:** Use 'Tahoma' as the primary font. If unavailable, use 'Verdana'.
+* **Desktop Icons:**
+    * Text Color: White.
+    * Text Shadow: `0px 1px 1px #000` (Crucial for reading text over the wallpaper).
+    * Icon Style: Use pixel-art placeholders or specific emojis that look like 32-bit icons until the user uploads real `.ico` files.
+* **Window Aesthetics:**
+    * **Header:** Gradient `linear-gradient(to bottom, #0054E3 0%, #2585EF 100%)`.
+    * **Corners:** Top corners rounded (5px), bottom corners square.
+    * **Borders:** Thick Blue (`#0055EA`, 3px solid).
+    * **Controls:** Red box (Close), Blue box (Maximize/Minimize) in the top right.
+
+## 3. Component Architecture
+Build the following file structure using React Functional Components:
+
+### A. `Taskbar.jsx` (Fixed Bottom)
+* **Background:** `linear-gradient(to bottom, #245DDA 0%, #1F51C4 3%, #183C95 10%, #163690 100%)`.
+* **Orange Highlight:** `border-top: 2px solid #E68B2C;`.
+* **Start Button:**
+    * MUST be a green pill/capsule shape on the far left.
+    * Gradient: `#3C8F35` to `#367F2C`.
+    * Icon: Windows Flag + Italicized bold text *"start"*.
+* **System Tray:** Clock and small icons on the far right (blue background).
+
+### B. `Desktop.jsx` (Main Container)
+* Holds the `background-image`.
+* Renders a grid of draggable `Icon` components.
+* **Icons Needed:** "My Computer" (About Me), "My Documents" (Projects), "Internet Explorer" (GitHub), "Recycle Bin".
+
+### C. `WindowManager` (Custom Hook)
+* Manage an array of windows: `[{ id: 1, title: 'About Me', isOpen: true, zIndex: 10 }]`.
+* Handle `minimize`, `maximize`, `close`, and `bringToFront` logic.
+
+### D. `Window.jsx` (The Wrapper)
+* A draggable container (use `react-draggable`).
+* Renders the "Luna" title bar and passes `children` into the white content area.
+
+## 4. Specific App Features
+* **About Me (My Computer):**
+    * Render a PDF Viewer (use `iframe` pointing to `/resume.pdf`).
+    * Left sidebar with "System Tasks" accordion.
+* **Projects (My Documents):**
+    * Render folder icons. Double-clicking a folder opens a "Project Detail" window.
+    * **Project Detail:** Embed an HTML5 video player styled like **Windows Media Player 9** (Silver/Blue buttons).
+
+## 5. Execution Instructions
+1.  Initialize the React Vite project.
+2.  Install `framer-motion` and `react-draggable`.
+3.  Write the CSS Module for `Taskbar` and `Window` to strictly match the hex codes provided above.
+4.  **IMPORTANT:** Ensure the code references `/wallpaper.jpg` and `/startup.mp3` and `/resume.pdf` as static assets in the `public` folder.
