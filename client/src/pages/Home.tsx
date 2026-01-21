@@ -47,18 +47,21 @@ export default function Home() {
 
   // Window Management
   const openWindow = (id: string, title?: string, props?: any) => {
+    const isMediaPlayer = id === 'media-player' || id === 'media_player';
+    const finalId = isMediaPlayer ? 'media-player' : id;
+    
     setWindows(prev => ({
       ...prev,
-      [id]: {
-        id,
-        title: title || prev[id]?.title || 'Window',
+      [finalId]: {
+        id: finalId,
+        title: title || prev[finalId]?.title || 'Window',
         isOpen: true,
         minimized: false,
         zIndex: Math.max(...Object.values(prev).map(w => w.zIndex), 0) + 1,
         props
       }
     }));
-    setActiveWindowId(id);
+    setActiveWindowId(finalId);
   };
 
   const closeWindow = (id: string) => {
@@ -149,8 +152,8 @@ export default function Home() {
                    key={project.id}
                    className="flex flex-col items-center p-2 hover:bg-blue-100 border border-transparent hover:border-blue-200 rounded cursor-pointer group"
                    onDoubleClick={() => {
-                     if (project.title.toLowerCase().includes('codesurfer')) {
-                       openWindow('media-player', 'CodeSurfer Preview', { videoUrl: '/codesurfer.mov' });
+                     if (project.title.toLowerCase().includes('codesurfer') || project.id.toString() === 'codesurfer') {
+                       openWindow('media-player', 'CodeSurfer - Windows Media Player', { videoUrl: '/codesurfer.mp4', autoPlay: true });
                      } else {
                        openWindow(`project-${project.id}`, project.title);
                      }
@@ -246,28 +249,28 @@ export default function Home() {
            label="My Computer"
            icon={<img src="https://cdn-icons-png.flaticon.com/512/2889/2889279.png" className="w-full h-full" alt="pc" />}
            selected={selectedIcon === 'computer'}
-           onClick={(e: React.MouseEvent) => { e.stopPropagation(); setSelectedIcon('computer'); }}
+           onClick={() => setSelectedIcon('computer')}
            onDoubleClick={() => openWindow('computer')}
          />
          <DesktopIcon 
            label="My Documents"
            icon={<img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" className="w-full h-full" alt="docs" />}
            selected={selectedIcon === 'documents'}
-           onClick={(e: React.MouseEvent) => { e.stopPropagation(); setSelectedIcon('documents'); }}
+           onClick={() => setSelectedIcon('documents')}
            onDoubleClick={() => openWindow('documents')}
          />
          <DesktopIcon 
            label="Internet Explorer"
            icon={<img src="https://cdn-icons-png.flaticon.com/512/888/888859.png" className="w-full h-full" alt="ie" />}
            selected={selectedIcon === 'ie'}
-           onClick={(e: React.MouseEvent) => { e.stopPropagation(); setSelectedIcon('ie'); }}
+           onClick={() => setSelectedIcon('ie')}
            onDoubleClick={() => window.open('https://github.com/devvarthsingh', '_blank')}
          />
          <DesktopIcon 
            label="Recycle Bin"
            icon={<img src="https://cdn-icons-png.flaticon.com/512/3143/3143460.png" className="w-full h-full" alt="bin" />}
            selected={selectedIcon === 'bin'}
-           onClick={(e: React.MouseEvent) => { e.stopPropagation(); setSelectedIcon('bin'); }}
+           onClick={() => setSelectedIcon('bin')}
            onDoubleClick={() => {}} // Empty for now
          />
       </div>

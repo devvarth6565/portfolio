@@ -16,7 +16,6 @@ export function MediaPlayer({ videoUrl, title }: MediaPlayerProps) {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play().catch(() => {
-        // Autoplay might be blocked, retry muted
         if (videoRef.current) {
           videoRef.current.muted = true;
           setIsMuted(true);
@@ -71,27 +70,31 @@ export function MediaPlayer({ videoUrl, title }: MediaPlayerProps) {
     }
   };
 
-  const displayUrl = videoUrl || "/codesurfer.mov";
+  const displayUrl = videoUrl || "/codesurfer.mp4";
 
   return (
-    <div className="flex flex-col h-full bg-[#1A1A1A] text-white font-sans select-none overflow-hidden rounded-b-lg">
-      {/* Visualization / Video Area */}
+    <div className="flex flex-col h-full bg-[#000000] text-white font-sans select-none overflow-hidden rounded-b-lg border border-[#353535]">
+      {/* Video Area */}
       <div className="flex-1 bg-black relative group overflow-hidden flex items-center justify-center">
         <video 
           ref={videoRef}
           src={displayUrl} 
           className="w-full h-full object-contain"
           playsInline
+          autoPlay
           onTimeUpdate={handleTimeUpdate}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
         />
+        <div className="absolute top-2 left-3 text-white/50 text-[10px] pointer-events-none">
+           Now Playing: {title}
+        </div>
       </div>
 
-      {/* Control Bar */}
-      <div className="bg-gradient-to-b from-[#3a3a3a] to-[#1a1a1a] p-2 flex flex-col gap-2 border-t border-white/10 shadow-2xl">
+      {/* Control Bar (Glossy WMP 11 style) */}
+      <div className="bg-gradient-to-b from-[#353535] to-[#000000] p-3 flex flex-col gap-3 border-t border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
         {/* Seeker Bar */}
-        <div className="px-2 w-full relative h-1 bg-gray-700 rounded-full cursor-pointer group">
+        <div className="px-1 w-full relative h-1.5 bg-[#202020] rounded-full cursor-pointer group shadow-inner border border-white/5">
           <input
             type="range"
             min="0"
@@ -101,48 +104,50 @@ export function MediaPlayer({ videoUrl, title }: MediaPlayerProps) {
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
           />
           <div 
-            className="absolute top-0 left-0 h-full bg-[#00FF00] rounded-full shadow-[0_0_5px_#00FF00]" 
+            className="absolute top-0 left-0 h-full bg-[#00FF00] rounded-full shadow-[0_0_8px_#00FF00] transition-all duration-100" 
             style={{ width: `${progress}%` }}
           ></div>
         </div>
 
         <div className="flex items-center justify-between px-4 pb-1">
-          {/* Secondary Left */}
-          <div className="flex items-center gap-4 text-gray-400">
+          {/* Controls Left */}
+          <div className="flex items-center gap-5 text-gray-400">
             <button onClick={stopVideo} className="hover:text-white transition-colors">
-              <Square className="w-4 h-4 fill-current" />
+              <Square className="w-5 h-5 fill-current" />
             </button>
             <button className="hover:text-white transition-colors">
-              <SkipBack className="w-4 h-4 fill-current" />
+              <SkipBack className="w-5 h-5 fill-current" />
             </button>
           </div>
 
-          {/* Main Play Button */}
+          {/* Large Main Play Button */}
           <button 
             onClick={togglePlay}
-            className="w-12 h-12 rounded-full bg-gradient-to-b from-blue-400 to-blue-600 flex items-center justify-center text-white border-2 border-white/20 shadow-[0_0_15px_rgba(59,130,246,0.5)] hover:scale-105 active:scale-95 transition-all"
+            className="w-14 h-14 rounded-full bg-gradient-to-b from-[#4faeef] via-[#1c5fb0] to-[#00317d] flex items-center justify-center text-white border-2 border-white/30 shadow-[0_0_20px_rgba(28,95,176,0.6),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95 transition-all relative after:absolute after:inset-0 after:rounded-full after:bg-gradient-to-t after:from-transparent after:to-white/10"
           >
             {isPlaying ? (
-              <Pause className="w-6 h-6 fill-current" />
+              <Pause className="w-7 h-7 fill-current relative z-10" />
             ) : (
-              <Play className="w-6 h-6 fill-current ml-1" />
+              <Play className="w-7 h-7 fill-current ml-1 relative z-10" />
             )}
           </button>
 
-          {/* Secondary Right / Volume */}
-          <div className="flex items-center gap-4 text-gray-400">
+          {/* Controls Right / Volume */}
+          <div className="flex items-center gap-5 text-gray-400">
             <button className="hover:text-white transition-colors">
-              <SkipForward className="w-4 h-4 fill-current" />
+              <SkipForward className="w-5 h-5 fill-current" />
             </button>
-            <div className="flex items-center gap-2 group">
-              <Volume2 className="w-4 h-4" />
+            <div className="flex items-center gap-3">
+              <button onClick={() => setVolume(v => v === 0 ? 70 : 0)} className="hover:text-white transition-colors">
+                {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+              </button>
               <input
                 type="range"
                 min="0"
                 max="100"
                 value={volume}
                 onChange={handleVolumeChange}
-                className="w-16 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer accent-blue-500"
+                className="w-20 h-1.5 bg-[#202020] rounded-full appearance-none cursor-pointer accent-[#4faeef] border border-white/5"
               />
             </div>
           </div>

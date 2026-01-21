@@ -1,0 +1,51 @@
+# Critical Fix: Connect "CodeSurfer" Icon to Media Player Window
+# Role: Senior React Architect
+# Priority: High (Broken Interaction)
+
+The user has a functional desktop, but double-clicking the "CodeSurfer" folder in "My Documents" currently does nothing (or opens the wrong thing). We need to hard-wire this specific icon to launch a custom **Windows Media Player** window.
+
+## 1. Interaction Logic (The Fix)
+Open `ProjectsWindow.jsx` (or wherever the specific folder grid is rendered).
+* **Current Logic:** It likely maps through generic items and does nothing on click.
+* **New Logic:** You must add a specific check inside the `onDoubleClick` handler:
+    ```javascript
+    const handleDoubleClick = (item) => {
+      if (item.id === 'codesurfer' || item.name === 'CodeSurfer') {
+        // Dispatch event to open Media Player
+        openWindow('media_player', {
+          title: 'CodeSurfer - Windows Media Player',
+          videoSrc: '/codesurfer.mp4', // User confirmed this filename
+          autoPlay: true
+        });
+      } else {
+        // Default folder behavior
+      }
+    };
+    ```
+
+## 2. The Media Player Component (`MediaPlayerWindow.jsx`)
+Create (or overwrite) this component to strictly resemble **Windows Media Player 11 (2007 Glossy Black Style)**.
+* **Container:**
+    * Background: `#000000` (Black).
+    * Border: Standard Window Frame (Blue) OR Custom Black Frame if possible.
+* **Video Area:**
+    * Use a standard `<video>` tag.
+    * **Attributes:** `autoPlay`, `playsInline`, `src={props.videoSrc}`.
+    * **Ref:** Use a `useRef` to force `.play()` inside a `useEffect` on mount.
+* **Controls (The Retro Look):**
+    * **Bottom Bar:** Glossy Black gradient (`linear-gradient(to bottom, #353535, #000000)`).
+    * **Play Button:** Large, circular, centered.
+    * **Seek Bar:** Green progress line (`#00FF00`) on a dark track.
+    * **Text:** "Now Playing: CodeSurfer Preview" in small white text.
+
+## 3. Window Manager Update (`useWindowManager.js`)
+Ensure the `switch` statement in your Window Manager correctly handles the case `'media_player'`.
+* It must render the `<MediaPlayerWindow />` component.
+* It must pass the `videoSrc` prop correctly.
+* **Crucial:** Set the default `width` to `800px` and `height` to `600px` so the video isn't cramped.
+
+## 4. Asset Validation
+* The user stated the file is `codesurfer.mp4`.
+* **Action:** In the code, verify the path is exactly `/codesurfer.mp4`.
+
+**Task:** Rewrite `ProjectsWindow.jsx` to handle the click event, create `MediaPlayerWindow.jsx` with the glossy 2007 style, and update `App.jsx` to register this new window type.
