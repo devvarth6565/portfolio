@@ -1,0 +1,46 @@
+# Feature Request: The "CodeSurfer" Video Preview (WMP Style)
+# Role: Senior React UI Specialist
+# Aesthetic: Windows Media Player 11 (XP Era, ~2007)
+
+We need to implement a dedicated Video Player Window that launches when the user double-clicks the "CodeSurfer" project.
+
+## 1. Asset Preparation
+* **Source File:** The user has provided a file named `codesurfer.mov`.
+* **Action:** You must reference this file path (`/codesurfer.mov`) in the video tag.
+* **Compatibility Note:** Ensure the `<video>` tag includes `playsInline` and `controls={false}` so we can use our custom retro UI.
+
+## 2. Component: `MediaPlayer.jsx`
+Create a new component that mimics the interface of Windows Media Player (XP Style).
+
+### A. Visual Structure (CSS/Tailwind)
+* **The Frame:**
+    * Dark, glossy background (`#1A1A1A` to `#000000` gradient).
+    * A "Visualization" area (black screen) where the video plays.
+* **The Control Bar (Bottom):**
+    * **Background:** Silver/Black glossy gradient (`linear-gradient(to bottom, #3a3a3a, #1a1a1a)`).
+    * **Play/Pause Button:** A large, circular button in the center-bottom.
+        * *Icon:* Standard triangle (Play) / Double bars (Pause).
+        * *Style:* Shiny blue or silver bevel effect.
+    * **Seeker Bar:** A thin progress bar above the buttons.
+        * *Track:* Dark Grey.
+        * *Fill:* Bright Green or Blue (XP style).
+    * **Secondary Buttons:** Stop, Previous, Next (smaller icons to the left/right of Play).
+    * **Volume:** A small slider on the far right.
+* **Header:** Display "CodeSurfer - Windows Media Player" in the window title bar.
+
+### B. Functional Logic (React Hooks)
+* **State:** Use `useRef` for the video element and `useState` for `isPlaying` and `progress`.
+* **Sync:**
+    * Clicking "Play" toggles `videoRef.current.play()`.
+    * Update the seeker bar width automatically as `videoRef.current.currentTime` updates.
+* **Auto-Play:** The video should attempt to auto-play when the window opens (muted if necessary to bypass browser restrictions, but try unmuted first).
+
+## 3. Integration with Window Manager
+* **Trigger:** Update the `Desktop.jsx` or `ProjectsWindow.jsx`.
+* **Logic:**
+    * When the item "CodeSurfer" is double-clicked:
+    * Dispatch `openWindow('media-player', { title: 'CodeSurfer Preview', src: '/codesurfer.mov' })`.
+* **Z-Index:** Ensure this window opens *on top* of the folder view.
+
+## 4. Deliverable
+Generate the `MediaPlayer.jsx` component code and the CSS required for the "Glossy WMP" look. Update the main `App.jsx` or `WindowManager.jsx` to handle this new window type.

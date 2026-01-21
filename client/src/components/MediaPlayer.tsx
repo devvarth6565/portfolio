@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Square, Volume2, VolumeX, Maximize2 } from 'lucide-react';
-import { Slider } from '@/components/ui/slider';
+import { Play, Pause, Square, Volume2, VolumeX, SkipBack, SkipForward } from 'lucide-react';
 
 interface MediaPlayerProps {
   videoUrl?: string | null;
@@ -12,16 +11,20 @@ export function MediaPlayer({ videoUrl, title }: MediaPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [currentTime, setCurrentTime] = useState('0:00');
-  const [duration, setDuration] = useState('0:00');
   const [volume, setVolume] = useState(70);
 
-  const formatTime = (time: number) => {
-    if (isNaN(time)) return '0:00';
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // Autoplay might be blocked, retry muted
+        if (videoRef.current) {
+          videoRef.current.muted = true;
+          setIsMuted(true);
+          videoRef.current.play().catch(e => console.error("Autoplay failed:", e));
+        }
+      });
+    }
+  }, []);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -42,122 +45,108 @@ export function MediaPlayer({ videoUrl, title }: MediaPlayerProps) {
     }
   };
 
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
-
   const handleTimeUpdate = () => {
     if (videoRef.current) {
       const current = videoRef.current.currentTime;
       const total = videoRef.current.duration;
       setProgress((current / total) * 100);
-      setCurrentTime(formatTime(current));
     }
   };
 
-  const handleLoadedMetadata = () => {
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (videoRef.current) {
-      setDuration(formatTime(videoRef.current.duration));
-    }
-  };
-
-  const handleSeek = (value: number[]) => {
-    if (videoRef.current) {
-      const newTime = (value[0] / 100) * videoRef.current.duration;
+      const newTime = (parseFloat(e.target.value) / 100) * videoRef.current.duration;
       videoRef.current.currentTime = newTime;
-      setProgress(value[0]);
+      setProgress(parseFloat(e.target.value));
     }
   };
 
-  const displayUrl = videoUrl || "/project_video.mp4";
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVol = parseFloat(e.target.value);
+    setVolume(newVol);
+    if (videoRef.current) {
+      videoRef.current.volume = newVol / 100;
+      videoRef.current.muted = newVol === 0;
+      setIsMuted(newVol === 0);
+    }
+  };
+
+  const displayUrl = videoUrl || "/codesurfer.mov";
 
   return (
-    <div className="bg-[#B6BCCC] border border-[#6B7484] p-1 shadow-md w-full max-w-[600px] mx-auto flex flex-col font-sans select-none">
-      {/* Title Bar */}
-      <div className="bg-[#2D60A8] text-white text-[11px] px-2 py-1 flex justify-between items-center mb-1 font-bold">
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-blue-400 rounded-sm flex items-center justify-center border border-blue-300">
-            <div className="w-1.5 h-1.5 bg-white"></div>
-          </div>
-          <span>Windows Media Player</span>
-        </div>
-        <div className="flex gap-0.5">
-          <div className="w-4 h-4 rounded-sm bg-[#3A6BC5] border border-[#1E4A9E] flex items-center justify-center text-[10px] shadow-sm cursor-pointer hover:bg-[#4E7FD9]">_</div>
-          <div className="w-4 h-4 rounded-sm bg-[#3A6BC5] border border-[#1E4A9E] flex items-center justify-center text-[10px] shadow-sm cursor-pointer hover:bg-[#4E7FD9]">□</div>
-          <div className="w-4 h-4 rounded-sm bg-[#C94D3C] border border-[#8B3529] flex items-center justify-center text-[10px] shadow-sm cursor-pointer hover:bg-[#E55D4B]">X</div>
-        </div>
-      </div>
-
-      {/* Screen Area */}
-      <div className="bg-black aspect-video w-full mb-1 relative border-2 border-[#545D6D] shadow-inner group overflow-hidden">
+    <div className="flex flex-col h-full bg-[#1A1A1A] text-white font-sans select-none overflow-hidden rounded-b-lg">
+      {/* Visualization / Video Area */}
+      <div className="flex-1 bg-black relative group overflow-hidden flex items-center justify-center">
         <video 
-           ref={videoRef}
-           src={displayUrl} 
-           className="w-full h-full object-contain"
-           onTimeUpdate={handleTimeUpdate}
-           onLoadedMetadata={handleLoadedMetadata}
-           onClick={togglePlay}
+          ref={videoRef}
+          src={displayUrl} 
+          className="w-full h-full object-contain"
+          playsInline
+          onTimeUpdate={handleTimeUpdate}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
         />
-        <div className="absolute top-2 left-2 text-white/70 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">
-           {title} - Windows Media Player
+      </div>
+
+      {/* Control Bar */}
+      <div className="bg-gradient-to-b from-[#3a3a3a] to-[#1a1a1a] p-2 flex flex-col gap-2 border-t border-white/10 shadow-2xl">
+        {/* Seeker Bar */}
+        <div className="px-2 w-full relative h-1 bg-gray-700 rounded-full cursor-pointer group">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={progress}
+            onChange={handleSeek}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+          />
+          <div 
+            className="absolute top-0 left-0 h-full bg-[#00FF00] rounded-full shadow-[0_0_5px_#00FF00]" 
+            style={{ width: `${progress}%` }}
+          ></div>
         </div>
-      </div>
 
-      {/* Seek Bar */}
-      <div className="px-1 mb-1 bg-[#8692A7]/20 py-1">
-        <Slider
-          value={[progress]}
-          onValueChange={handleSeek}
-          max={100}
-          step={0.1}
-          className="h-1.5 cursor-pointer"
-        />
-      </div>
+        <div className="flex items-center justify-between px-4 pb-1">
+          {/* Secondary Left */}
+          <div className="flex items-center gap-4 text-gray-400">
+            <button onClick={stopVideo} className="hover:text-white transition-colors">
+              <Square className="w-4 h-4 fill-current" />
+            </button>
+            <button className="hover:text-white transition-colors">
+              <SkipBack className="w-4 h-4 fill-current" />
+            </button>
+          </div>
 
-      {/* Controls Area */}
-      <div className="bg-gradient-to-b from-[#E3E7F0] to-[#C0C7D8] p-1.5 border-t border-white flex items-center justify-between gap-4 rounded-b-sm shadow-inner">
-         <div className="flex items-center gap-1.5">
-           <button 
-             onClick={togglePlay}
-             className="w-9 h-9 rounded-full bg-gradient-to-b from-blue-400 to-blue-700 flex items-center justify-center text-white border-2 border-white shadow-[0_0_4px_rgba(0,0,0,0.3)] hover:brightness-110 active:scale-95 transition-all"
-           >
-             {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
-           </button>
-           <button 
-             onClick={stopVideo}
-             className="w-6 h-6 rounded bg-gradient-to-b from-[#E3E7F0] to-[#C0C7D8] border border-gray-500 flex items-center justify-center text-gray-700 shadow-sm hover:brightness-105 active:translate-y-[1px]"
-           >
-             <Square className="w-3 h-3 fill-gray-500" />
-           </button>
-         </div>
+          {/* Main Play Button */}
+          <button 
+            onClick={togglePlay}
+            className="w-12 h-12 rounded-full bg-gradient-to-b from-blue-400 to-blue-600 flex items-center justify-center text-white border-2 border-white/20 shadow-[0_0_15px_rgba(59,130,246,0.5)] hover:scale-105 active:scale-95 transition-all"
+          >
+            {isPlaying ? (
+              <Pause className="w-6 h-6 fill-current" />
+            ) : (
+              <Play className="w-6 h-6 fill-current ml-1" />
+            )}
+          </button>
 
-         {/* Time and Playlist Display */}
-         <div className="flex-1 bg-black/80 rounded border border-white/20 px-2 py-1 flex justify-between items-center text-[10px] font-mono text-blue-400 shadow-inner">
-           <span>{currentTime}</span>
-           <span className="text-white/40">/</span>
-           <span>{duration}</span>
-         </div>
-
-         <div className="flex items-center gap-2">
-           <button 
-             onClick={toggleMute}
-             className="text-gray-700 hover:text-blue-700 transition-colors"
-           >
-             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-           </button>
-           <div className="w-16 h-1.5 bg-[#8692A7] rounded-full overflow-hidden border border-gray-500 shadow-inner relative group cursor-pointer">
-              <div 
-                className={`h-full bg-gradient-to-r from-blue-500 to-blue-300 transition-all ${isMuted ? 'opacity-30' : ''}`} 
-                style={{ width: `${volume}%` }}
-              ></div>
-           </div>
-           <button className="text-gray-700 hover:text-blue-700 transition-colors">
-             <Maximize2 className="w-4 h-4" />
-           </button>
-         </div>
+          {/* Secondary Right / Volume */}
+          <div className="flex items-center gap-4 text-gray-400">
+            <button className="hover:text-white transition-colors">
+              <SkipForward className="w-4 h-4 fill-current" />
+            </button>
+            <div className="flex items-center gap-2 group">
+              <Volume2 className="w-4 h-4" />
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="w-16 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer accent-blue-500"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
