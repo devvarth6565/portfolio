@@ -1,4 +1,4 @@
-import { db } from "./db";
+import { db } from "./db.js";
 import { projects, type Project, type InsertProject } from "../shared/schema.js";
 import { eq } from "drizzle-orm";
 
