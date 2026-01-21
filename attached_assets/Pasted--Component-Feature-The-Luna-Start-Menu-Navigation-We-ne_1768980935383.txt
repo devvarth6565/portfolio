@@ -1,0 +1,42 @@
+# Component Feature: The "Luna" Start Menu (Navigation)
+
+We need to implement the iconic Windows XP Start Menu. This will serve as the secondary navigation for the portfolio.
+
+## 1. Visual Structure (The Layout)
+Create a `StartMenu.jsx` component that floats *above* the Start Button. It must have the following distinct sections:
+
+* **Header (Top):**
+    * Gradient: Blue (`#1c5fb0` to `#4faeef`).
+    * Content: A User Profile Picture (rounded square with a white border) and the username "Administrator" (or the user's name) in bold white shadow text.
+* **Body (Two Columns):**
+    * **Left Column (Programs):**
+        * Background: White.
+        * Content: List of "Pinned" apps. Add items like "Internet Explorer" (links to GitHub), "Outlook Express" (links to `mailto:` email), and a "Resume" shortcut.
+        * Separator: A generic gray line separating top pinned apps from "All Programs" at the bottom.
+    * **Right Column (System):**
+        * Background: Light Blue (`#D3E5FA`).
+        * Content: Bold text links for "My Documents" (opens Projects), "My Recent Documents", "My Pictures", "My Music", and "Control Panel".
+        * Styling: The text color in this column must be dark blue (`#001358`).
+* **Footer (Bottom):**
+    * Gradient: Blue (same as header).
+    * Content: Two buttons on the right: "Log Off" (Yellow icon) and "Turn Off Computer" (Red icon).
+
+## 2. Integration Logic (The Brains)
+Connect this menu to the existing `Desktop` and `WindowManager`:
+
+* **Toggle State:** The menu visibility is controlled by the Start Button in the Taskbar.
+* **Click-Outside:** Implement a `useEffect` listener. If the menu is open and the user clicks on the Desktop or an open window, the Start Menu must close immediately.
+* **Navigation Actions:**
+    * Clicking "My Documents" must trigger `openWindow('projects')`.
+    * Clicking "Run..." should open a small modal with an input (easter egg feature).
+    * Clicking "Turn Off" should trigger a CSS filter that turns the whole screen grayscale (simulating a shutdown).
+
+## 3. Animation (Framer Motion)
+* **Entry:** The menu must slide up from the bottom-left (`y: 20px` to `y: 0`, `opacity: 0` to `1`).
+* **Exit:** Disappear instantly or fade out very quickly (`duration: 0.1s`).
+
+## 4. Asset Handling
+* Use standard emoji or simple SVG icons for the menu items (e.g., 📂 for Documents, 📧 for Email) until the user uploads specific .ico files.
+* **User Picture:** Look for a file `profile.jpg` in the public folder. If not found, use a placeholder (the classic XP Chess Piece or Rubber Duck).
+
+**Task:** Generate the `StartMenu.jsx` component and the necessary CSS to achieve this specific two-column layout.

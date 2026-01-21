@@ -8,6 +8,8 @@ import { useProjects, useProject } from '@/hooks/use-projects';
 import { format } from 'date-fns';
 import { AnimatePresence } from 'framer-motion';
 
+import { StartMenu } from '@/components/StartMenu';
+
 // Types
 interface WindowState {
   id: string;
@@ -25,12 +27,12 @@ export default function Home() {
   const [windows, setWindows] = useState<Record<string, WindowState>>({
     computer: { id: 'computer', title: 'My Computer', isOpen: false, minimized: false, zIndex: 10 },
     documents: { id: 'documents', title: 'My Documents', isOpen: false, minimized: false, zIndex: 10 },
-    // Project windows are dynamic: 'project-1', 'project-2', etc.
   });
   
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
   const [startupPlayed, setStartupPlayed] = useState(false);
+  const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
 
   // Startup Sound
   useEffect(() => {
@@ -287,12 +289,23 @@ export default function Home() {
         ))}
       </div>
 
+      {/* Start Menu */}
+      <AnimatePresence>
+        {isStartMenuOpen && (
+          <StartMenu 
+            isOpen={isStartMenuOpen} 
+            onClose={() => setIsStartMenuOpen(false)}
+            onOpenWindow={openWindow}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Taskbar */}
       <Taskbar 
         openWindows={Object.values(windows).filter(w => w.isOpen)}
         activeWindowId={activeWindowId}
         onWindowClick={(id) => focusWindow(id)}
-        onStartClick={() => alert("Start Menu would open here (Not implemented in this demo)")}
+        onStartClick={() => setIsStartMenuOpen(!isStartMenuOpen)}
       />
     </div>
   );

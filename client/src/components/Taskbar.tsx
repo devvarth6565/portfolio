@@ -23,6 +23,7 @@ export function Taskbar({ openWindows, activeWindowId, onWindowClick, onStartCli
       <div 
         className="start-button group"
         onClick={onStartClick}
+        data-testid="button-start-toggle"
       >
         <div className="italic font-bold text-white text-lg flex items-center gap-1.5 drop-shadow-md">
            <svg className="w-5 h-5 drop-shadow-sm" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
