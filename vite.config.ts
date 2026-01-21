@@ -31,7 +31,11 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
   },
+  // --- UPDATED SERVER CONFIGURATION ---
   server: {
+    port: 3000,        // Forces the server to use port 3000
+    host: "0.0.0.0",   // Ensures it is accessible
+    strictPort: false, // If 3000 is taken, it will try 3001 automatically
     fs: {
       strict: true,
       deny: ["**/.*"],

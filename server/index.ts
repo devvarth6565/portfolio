@@ -3,8 +3,6 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 
-
-
 const app = express();
 const httpServer = createServer(app);
 
@@ -61,7 +59,10 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
+// --- NEW SETUP FUNCTION ---
+// We wrap the setup logic in a function so we can reuse it
+// for both Local (MacBook) and Vercel (Cloud).
+const setupServer = async () => {
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
@@ -80,26 +81,45 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
-  } else {
+  if (app.get("env") === "development") {
     const { setupVite } = await import("./vite");
     await setupVite(httpServer, app);
+  } else {
+    serveStatic(app);
   }
+};
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || "5000", 10);
-  httpServer.listen(
-    {
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    },
-    () => {
-      log(`serving on port ${port}`);
-    },
-  );
-})();
+// --- STARTUP LOGIC ---
+
+// CASE 1: Running Locally (npm run dev)
+// We check if we are NOT in production to start the listener manually.
+if (process.env.NODE_ENV !== "production") {
+  (async () => {
+    await setupServer();
+    const port = parseInt(process.env.PORT || "5000", 10);
+    httpServer.listen(
+      {
+        port,
+        host: "0.0.0.0",
+        reusePort: true,
+      },
+      () => {
+        log(`serving on port ${port}`);
+      },
+    );
+  })();
+}
+
+// CASE 2: Running on Vercel
+// Vercel expects us to export a function that handles the request.
+// We use a promise to ensure 'setupServer' only runs once (on the first request).
+let setupPromise: Promise<void> | null = null;
+
+export default async (req: any, res: any) => {
+  if (!setupPromise) {
+    setupPromise = setupServer();
+  }
+  await setupPromise;
+  // Pass the request to the Express app
+  return app(req, res);
+};
