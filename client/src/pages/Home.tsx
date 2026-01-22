@@ -399,9 +399,9 @@ export default function Home() {
       
       {/* Desktop Icons */}
       <div className="absolute top-4 left-4 flex flex-col gap-2 z-0">
-         <DesktopIcon label="My Computer" icon={<img src="https://cdn-icons-png.flaticon.com/512/2889/2889279.png" className="w-full h-full" alt="pc" />} selected={selectedIcon === 'computer'} onClick={() => setSelectedIcon('computer')} onDoubleClick={() => openWindow('computer', 'My Computer')} />
+         <DesktopIcon label="My Computer" icon={<img src="https://win98icons.alexmeub.com/icons/png/computer-5.png" className="w-full h-full" alt="pc" />} selected={selectedIcon === 'computer'} onClick={() => setSelectedIcon('computer')} onDoubleClick={() => openWindow('computer', 'My Computer')} />
          <DesktopIcon label="My Documents" icon={<img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" className="w-full h-full" alt="docs" />} selected={selectedIcon === 'documents'} onClick={() => setSelectedIcon('documents')} onDoubleClick={() => openWindow('documents', 'My Documents')} />
-         <DesktopIcon label="About Me" icon={<img src="https://cdn-icons-png.flaticon.com/512/3237/3237472.png" className="w-full h-full" alt="about" />} selected={selectedIcon === 'about'} onClick={() => setSelectedIcon('about')} onDoubleClick={() => openWindow('about', 'About Me')} />
+         <DesktopIcon label="About Me" icon={<img src="https://win98icons.alexmeub.com/icons/png/address_book_user.png " className="w-full h-full" alt="about" />} selected={selectedIcon === 'about'} onClick={() => setSelectedIcon('about')} onDoubleClick={() => openWindow('about', 'About Me')} />
          <DesktopIcon label="GitHub" icon={<img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" className="w-full h-full" alt="gh" />} selected={selectedIcon === 'github'} onClick={() => setSelectedIcon('github')} onDoubleClick={() => window.open('https://github.com/devvarth6565', '_blank')} />
       </div>
 

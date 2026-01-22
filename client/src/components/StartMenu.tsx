@@ -49,7 +49,7 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
             alt="Profile" 
             className="w-full h-full object-cover"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+              (e.target as HTMLImageElement).src = 'https://win98icons.alexmeub.com/icons/png/computer_user_pencil-0.png';
             }}
           />
         </div>
@@ -66,7 +66,7 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
             className="flex items-center gap-2 p-1 hover:bg-[#2F71CD] hover:text-white rounded text-xs text-left group"
             onClick={() => window.open('https://github.com/devvarthsingh', '_blank')}
           >
-            <img src="https://cdn-icons-png.flaticon.com/512/888/888859.png" className="w-8 h-8" alt="IE" />
+            <img src="https://win98icons.alexmeub.com/icons/png/msie1-2.png" className="w-8 h-8" alt="IE" />
             <div className="flex flex-col">
               <span className="font-bold">Internet Explorer</span>
             </div>
