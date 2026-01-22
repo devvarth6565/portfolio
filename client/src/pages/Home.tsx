@@ -199,7 +199,7 @@ const AboutMeContent = () => (
     {/* Left Panel - Profile & Quick Info */}
     <div className="w-[220px] bg-[#E3EAFB] border-r border-[#9BB2C9] p-4 flex flex-col gap-4 shrink-0">
       <div className="bg-white p-1 border border-[#9BB2C9] shadow-sm rounded-sm self-center">
-        {/* Directly using /profile.jpg which should be in your public folder */}
+        {/* Directly using /profile.jpeg which should be in your public folder */}
         <img 
           src="/profile.jpeg" 
           alt="Profile" 
@@ -401,7 +401,14 @@ export default function Home() {
       <div className="absolute top-4 left-4 flex flex-col gap-2 z-0">
          <DesktopIcon label="My Computer" icon={<img src="https://win98icons.alexmeub.com/icons/png/computer-5.png" className="w-full h-full" alt="pc" />} selected={selectedIcon === 'computer'} onClick={() => setSelectedIcon('computer')} onDoubleClick={() => openWindow('computer', 'My Computer')} />
          <DesktopIcon label="My Documents" icon={<img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" className="w-full h-full" alt="docs" />} selected={selectedIcon === 'documents'} onClick={() => setSelectedIcon('documents')} onDoubleClick={() => openWindow('documents', 'My Documents')} />
-         <DesktopIcon label="About Me" icon={<img src="https://win98icons.alexmeub.com/icons/png/address_book_user.png " className="w-full h-full" alt="about" />} selected={selectedIcon === 'about'} onClick={() => setSelectedIcon('about')} onDoubleClick={() => openWindow('about', 'About Me')} />
+         <DesktopIcon label="About Me" icon={<img src="https://win98icons.alexmeub.com/icons/png/address_book_user.png" className="w-full h-full" alt="about" />} selected={selectedIcon === 'about'} onClick={() => setSelectedIcon('about')} onDoubleClick={() => openWindow('about', 'About Me')} />
+         
+         {/* CodeSurfer Live Icon */}
+         <DesktopIcon label="CodeSurfer Live" icon={<img src="https://win98icons.alexmeub.com/icons/png/bar_graph_default-1.png" className="w-full h-full" alt="web" />} selected={selectedIcon === 'codesurfer'} onClick={() => setSelectedIcon('codesurfer')} onDoubleClick={() => window.open('https://code-surfer-five.vercel.app/', '_blank')} />
+         
+         {/* techConnect Icon */}
+         <DesktopIcon label="techConnect" icon={<img src="https://win98icons.alexmeub.com/icons/png/address_book_users.png" className="w-full h-full" alt="net" />} selected={selectedIcon === 'techconnect'} onClick={() => setSelectedIcon('techconnect')} onDoubleClick={() => window.open('http://3.106.246.152', '_blank')} />
+         
          <DesktopIcon label="GitHub" icon={<img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" className="w-full h-full" alt="gh" />} selected={selectedIcon === 'github'} onClick={() => setSelectedIcon('github')} onDoubleClick={() => window.open('https://github.com/devvarth6565', '_blank')} />
       </div>
 
