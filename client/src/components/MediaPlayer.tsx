@@ -13,17 +13,28 @@ export function MediaPlayer({ videoUrl, title }: MediaPlayerProps) {
   const [progress, setProgress] = useState(0);
   const [volume, setVolume] = useState(70);
 
+  const displayUrl = videoUrl || "/codesurfer.mp4";
+
+  // CHANGE 1: Run this effect whenever 'displayUrl' changes to handle new files
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.play().catch(() => {
-        if (videoRef.current) {
-          videoRef.current.muted = true;
-          setIsMuted(true);
-          videoRef.current.play().catch(e => console.error("Autoplay failed:", e));
-        }
-      });
+      // Force the video to load the new source
+      videoRef.current.load();
+      
+      videoRef.current.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {
+          // Fallback for browsers blocking autoplay
+          if (videoRef.current) {
+            videoRef.current.muted = true;
+            setIsMuted(true);
+            videoRef.current.play()
+              .then(() => setIsPlaying(true))
+              .catch(e => console.error("Autoplay failed:", e));
+          }
+        });
     }
-  }, []);
+  }, [displayUrl]); // <--- Added dependency here
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -48,12 +59,13 @@ export function MediaPlayer({ videoUrl, title }: MediaPlayerProps) {
     if (videoRef.current) {
       const current = videoRef.current.currentTime;
       const total = videoRef.current.duration;
-      setProgress((current / total) * 100);
+      // Prevent NaN errors if duration isn't loaded yet
+      if (total) setProgress((current / total) * 100);
     }
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (videoRef.current) {
+    if (videoRef.current && videoRef.current.duration) {
       const newTime = (parseFloat(e.target.value) / 100) * videoRef.current.duration;
       videoRef.current.currentTime = newTime;
       setProgress(parseFloat(e.target.value));
@@ -70,28 +82,30 @@ export function MediaPlayer({ videoUrl, title }: MediaPlayerProps) {
     }
   };
 
-  const displayUrl = videoUrl || "/codesurfer.mp4";
-
   return (
     <div className="flex flex-col h-full bg-[#000000] text-white font-sans select-none overflow-hidden rounded-b-lg border border-[#353535]">
       {/* Video Area */}
-      <div className="flex-1 bg-black relative group overflow-hidden flex items-center justify-center">
+      {/* CHANGE 2: Added onClick={togglePlay} to the container and cursor-pointer */}
+      <div 
+        className="flex-1 bg-black relative group overflow-hidden flex items-center justify-center cursor-pointer"
+        onClick={togglePlay} 
+      >
         <video 
           ref={videoRef}
           src={displayUrl} 
           className="w-full h-full object-contain"
           playsInline
-          autoPlay
+          // Remove autoPlay here since we handle it in useEffect for better control
           onTimeUpdate={handleTimeUpdate}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
         />
-        <div className="absolute top-2 left-3 text-white/50 text-[10px] pointer-events-none">
+        <div className="absolute top-2 left-3 text-white/50 text-[10px] pointer-events-none shadow-black drop-shadow-md">
            Now Playing: {title}
         </div>
       </div>
 
-      {/* Control Bar (Glossy WMP 11 style) */}
+      {/* Control Bar */}
       <div className="bg-gradient-to-b from-[#353535] to-[#000000] p-3 flex flex-col gap-3 border-t border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
         {/* Seeker Bar */}
         <div className="px-1 w-full relative h-1.5 bg-[#202020] rounded-full cursor-pointer group shadow-inner border border-white/5">
@@ -112,7 +126,7 @@ export function MediaPlayer({ videoUrl, title }: MediaPlayerProps) {
         <div className="flex items-center justify-between px-4 pb-1">
           {/* Controls Left */}
           <div className="flex items-center gap-5 text-gray-400">
-            <button onClick={stopVideo} className="hover:text-white transition-colors">
+            <button onClick={(e) => { e.stopPropagation(); stopVideo(); }} className="hover:text-white transition-colors">
               <Square className="w-5 h-5 fill-current" />
             </button>
             <button className="hover:text-white transition-colors">
@@ -122,7 +136,7 @@ export function MediaPlayer({ videoUrl, title }: MediaPlayerProps) {
 
           {/* Large Main Play Button */}
           <button 
-            onClick={togglePlay}
+            onClick={(e) => { e.stopPropagation(); togglePlay(); }}
             className="w-14 h-14 rounded-full bg-gradient-to-b from-[#4faeef] via-[#1c5fb0] to-[#00317d] flex items-center justify-center text-white border-2 border-white/30 shadow-[0_0_20px_rgba(28,95,176,0.6),inset_0_2px_4px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95 transition-all relative after:absolute after:inset-0 after:rounded-full after:bg-gradient-to-t after:from-transparent after:to-white/10"
           >
             {isPlaying ? (
