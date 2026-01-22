@@ -9,7 +9,7 @@ import { AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 
 // Ensure this path matches your hooks folder
-import { useGitHubProjects, GitHubRepo } from '@/hooks/useGitHubProjects';
+import { useGitHubProjects } from '@/hooks/useGitHubProjects';
 
 // --- TYPES ---
 interface WindowState {
@@ -21,16 +21,32 @@ interface WindowState {
   props?: any;
 }
 
+// --- CONSTANTS ---
+const devProfile = {
+    name: "Dev",
+    role: "Full Stack Developer & AI Enthusiast",
+    education: "Punjab Engineering College, Chandigarh",
+    location: "Chandigarh, India 🇮🇳",
+    email: "devvarthsinghwork@gmail.com",
+    interests: ["Generative AI", "Agentic AI Workflows", "System Design", "Open Source"],
+    technologies: {
+        frontend: ["React", "Vite", "Tailwind CSS", "Framer Motion"],
+        backend: ["Node.js", "Express", "MongoDB", "MERN Stack"],
+        ai_ml: ["LangChain", "OpenAI SDK", "Vector DBs", "RAG Pipelines"],
+        tools: ["Git", "Docker", "Postman", "Linux"]
+    },
+    currentFocus: "Building Autonomous AI Agents & Scalable Web Apps",
+    funFact: "The hardest part of coading isn't writing code.... it is naming things"
+};
+
 // --- COMPONENT: TABBED PROJECT DETAIL ---
 const ProjectDetailContent = ({ data }: { data: any }) => {
   const [activeTab, setActiveTab] = useState('General');
   const [readme, setReadme] = useState<string>('');
   const [loadingReadme, setLoadingReadme] = useState(false);
 
-  // Fallback for title/name
   const displayTitle = data.name || data.title || 'Project Details';
   const fullName = data.full_name || displayTitle;
-
   const createdDate = data.created_at ? format(new Date(data.created_at), 'PPP') : 'Unknown';
   const updatedDate = data.updated_at ? format(new Date(data.updated_at), 'PPP') : 'Unknown';
 
@@ -147,7 +163,8 @@ const ProjectDetailContent = ({ data }: { data: any }) => {
   );
 };
 
-// --- SUB-COMPONENTS (Defined OUTSIDE Home to prevent re-render bugs) ---
+// --- SUB-COMPONENTS ---
+
 const MyComputerContent = () => (
     <div className="flex h-full bg-white">
        <SystemSidebar />
@@ -177,7 +194,102 @@ const MyComputerContent = () => (
     </div>
 );
 
-// We pass props to this component now
+const AboutMeContent = () => (
+  <div className="flex h-full bg-[#ECE9D8] select-text">
+    {/* Left Panel - Profile & Quick Info */}
+    <div className="w-[220px] bg-[#E3EAFB] border-r border-[#9BB2C9] p-4 flex flex-col gap-4 shrink-0">
+      <div className="bg-white p-1 border border-[#9BB2C9] shadow-sm rounded-sm self-center">
+        {/* Directly using /profile.jpg which should be in your public folder */}
+        <img 
+          src="/profile.jpeg" 
+          alt="Profile" 
+          className="w-32 h-32 object-cover"
+        />
+      </div>
+      <div className="text-center">
+        <h2 className="text-[#1A3866] font-bold text-lg leading-tight">{devProfile.name}</h2>
+        <p className="text-xs text-gray-600 mt-1">{devProfile.role}</p>
+        <p className="text-xs text-gray-500 mt-0.5">{devProfile.location}</p>
+      </div>
+      <div className="mt-auto bg-white/50 p-3 rounded border border-[#9BB2C9] text-xs">
+        <strong className="text-[#1A3866] block mb-1">Studying at:</strong>
+        {devProfile.education}
+      </div>
+      <a href={`mailto:${devProfile.email}`} className="flex items-center justify-center gap-2 bg-white border border-[#003c74] px-2 py-1 rounded text-xs text-[#003c74] hover:bg-blue-50 cursor-pointer no-underline">
+          <img src="https://cdn-icons-png.flaticon.com/512/542/542638.png" className="w-3 h-3" alt="mail" />
+          Contact Me
+      </a>
+    </div>
+
+    {/* Right Panel - Details */}
+    <div className="flex-1 bg-white p-6 overflow-auto">
+       <div className="mb-6">
+          <h3 className="text-[#1A3866] font-bold border-b border-[#D6DFF7] mb-2 pb-1">About Me</h3>
+          <p className="text-sm text-gray-700 leading-relaxed mb-4">
+            I am a student at Punjab Engineering College, deeply passionate about <strong>Full Stack Development</strong> and <strong>Generative AI</strong>. 
+            My primary focus is on building intelligent, agentic AI workflows and scalable web applications using the MERN stack.
+            I love pushing the boundaries of what web apps can do by integrating advanced AI capabilities.
+          </p>
+          <div className="bg-[#FFFFE1] border border-[#E2C37A] p-2 text-sm text-gray-700 rounded flex gap-2 items-start">
+             <span className="text-lg">💡</span> 
+             <div>
+               <strong>Fun Fact:</strong> {devProfile.funFact}
+             </div>
+          </div>
+       </div>
+
+       <div className="mb-6">
+          <h3 className="text-[#1A3866] font-bold border-b border-[#D6DFF7] mb-3 pb-1">Tech Stack</h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+             <div>
+                <strong className="block text-gray-500 mb-1 text-xs uppercase tracking-wider">Frontend</strong>
+                <div className="flex flex-wrap gap-1">
+                   {devProfile.technologies.frontend.map(t => (
+                      <span key={t} className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-100">{t}</span>
+                   ))}
+                </div>
+             </div>
+             <div>
+                <strong className="block text-gray-500 mb-1 text-xs uppercase tracking-wider">Backend</strong>
+                <div className="flex flex-wrap gap-1">
+                   {devProfile.technologies.backend.map(t => (
+                      <span key={t} className="bg-green-50 text-green-700 px-2 py-0.5 rounded border border-green-100">{t}</span>
+                   ))}
+                </div>
+             </div>
+             <div>
+                <strong className="block text-gray-500 mb-1 text-xs uppercase tracking-wider">AI & Agents</strong>
+                <div className="flex flex-wrap gap-1">
+                   {devProfile.technologies.ai_ml.map(t => (
+                      <span key={t} className="bg-purple-50 text-purple-700 px-2 py-0.5 rounded border border-purple-100">{t}</span>
+                   ))}
+                </div>
+             </div>
+             <div>
+                <strong className="block text-gray-500 mb-1 text-xs uppercase tracking-wider">Tools</strong>
+                <div className="flex flex-wrap gap-1">
+                   {devProfile.technologies.tools.map(t => (
+                      <span key={t} className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded border border-gray-300">{t}</span>
+                   ))}
+                </div>
+             </div>
+          </div>
+       </div>
+
+       <div>
+         <h3 className="text-[#1A3866] font-bold border-b border-[#D6DFF7] mb-3 pb-1">Interests</h3>
+         <ul className="list-disc list-inside text-sm text-gray-700 grid grid-cols-2">
+            {devProfile.interests.map(i => <li key={i}>{i}</li>)}
+         </ul>
+       </div>
+       
+       <div className="mt-6 pt-4 border-t border-[#D6DFF7] text-xs text-gray-500">
+          <strong>Contact Email: </strong> {devProfile.email}
+       </div>
+    </div>
+  </div>
+);
+
 const MyDocumentsContent = ({ projects, isLoading, onProjectClick }: { projects: any[], isLoading: boolean, onProjectClick: (p: any) => void }) => (
     <div className="flex h-full bg-white">
        <SystemSidebar />
@@ -212,6 +324,7 @@ export default function Home() {
   const [windows, setWindows] = useState<Record<string, WindowState>>({
     computer: { id: 'computer', title: 'My Computer', isOpen: false, minimized: false, zIndex: 10 },
     documents: { id: 'documents', title: 'My Documents', isOpen: false, minimized: false, zIndex: 10 },
+    about: { id: 'about', title: 'About Me', isOpen: false, minimized: false, zIndex: 10 }
   });
   
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
@@ -228,13 +341,11 @@ export default function Home() {
         audio.play().catch(() => {}); // Silent catch
     };
     window.addEventListener('click', enableAudio, { once: true });
-    return () => window.removeEventListener('click', enableAudio);
+    return () => window.removeEventListener('click', enableAudio, { once: true });
   }, []);
 
   // Window Management
   const openWindow = useCallback((id: string, title?: string, props?: any) => {
-    console.log(`Opening window: ${id}`, title || 'Default Title');
-    
     const isMediaPlayer = id === 'media-player';
     const finalId = isMediaPlayer ? 'media-player' : id;
     
@@ -256,7 +367,7 @@ export default function Home() {
     setWindows(prev => {
       const newWindows = { ...prev };
       if (id.startsWith('project-')) {
-         delete newWindows[id]; // Fully remove dynamic windows so they reset when opened again
+         delete newWindows[id]; // Fully remove dynamic windows
       } else {
          newWindows[id].isOpen = false;
       }
@@ -290,6 +401,7 @@ export default function Home() {
       <div className="absolute top-4 left-4 flex flex-col gap-2 z-0">
          <DesktopIcon label="My Computer" icon={<img src="https://cdn-icons-png.flaticon.com/512/2889/2889279.png" className="w-full h-full" alt="pc" />} selected={selectedIcon === 'computer'} onClick={() => setSelectedIcon('computer')} onDoubleClick={() => openWindow('computer', 'My Computer')} />
          <DesktopIcon label="My Documents" icon={<img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" className="w-full h-full" alt="docs" />} selected={selectedIcon === 'documents'} onClick={() => setSelectedIcon('documents')} onDoubleClick={() => openWindow('documents', 'My Documents')} />
+         <DesktopIcon label="About Me" icon={<img src="https://cdn-icons-png.flaticon.com/512/3237/3237472.png" className="w-full h-full" alt="about" />} selected={selectedIcon === 'about'} onClick={() => setSelectedIcon('about')} onDoubleClick={() => openWindow('about', 'About Me')} />
          <DesktopIcon label="GitHub" icon={<img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" className="w-full h-full" alt="gh" />} selected={selectedIcon === 'github'} onClick={() => setSelectedIcon('github')} onDoubleClick={() => window.open('https://github.com/devvarth6565', '_blank')} />
       </div>
 
@@ -306,11 +418,16 @@ export default function Home() {
                onClick={() => focusWindow(win.id)}
                onClose={() => closeWindow(win.id)}
                onMinimize={() => minimizeWindow(win.id)}
-               icon={win.id === 'computer' ? "https://cdn-icons-png.flaticon.com/512/2889/2889279.png" : "https://cdn-icons-png.flaticon.com/512/3767/3767084.png"}
+               icon={
+                 win.id === 'computer' ? "https://cdn-icons-png.flaticon.com/512/2889/2889279.png" : 
+                 win.id === 'about' ? "https://cdn-icons-png.flaticon.com/512/3237/3237472.png" :
+                 "https://cdn-icons-png.flaticon.com/512/3767/3767084.png"
+               }
              >
                 {/* --- RENDER CONTENT BASED ON ID --- */}
                 
                 {win.id === 'computer' && <MyComputerContent />}
+                {win.id === 'about' && <AboutMeContent />}
                 
                 {win.id === 'documents' && (
                     <MyDocumentsContent 
@@ -344,7 +461,7 @@ export default function Home() {
 
       <Taskbar openWindows={Object.values(windows).filter(w => w.isOpen)} activeWindowId={activeWindowId} onWindowClick={(id) => focusWindow(id)} onStartClick={() => setIsStartMenuOpen(!isStartMenuOpen)} />
       
-      {/* Interaction Overlay to Fix Audio (Optional - can be removed if you prefer silence) */}
+      {/* Interaction Overlay to Fix Audio */}
       {!audioAllowed && (
         <div className="absolute top-4 right-4 bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded text-xs z-50 animate-bounce pointer-events-none">
             Click anywhere to enable audio...
