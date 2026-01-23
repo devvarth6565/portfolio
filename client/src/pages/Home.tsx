@@ -36,7 +36,7 @@ const devProfile = {
         tools: ["Git", "Docker", "Postman", "Linux"]
     },
     currentFocus: "Building Autonomous AI Agents & Scalable Web Apps",
-    funFact: "The hardest part of coading isn't writing code.... it is naming things"
+    funFact: "The hardest part of coding isn't writing code... it is naming things"
 };
 
 // --- COMPONENT: TABBED PROJECT DETAIL ---
@@ -53,19 +53,20 @@ const ProjectDetailContent = ({ data }: { data: any }) => {
   useEffect(() => {
      if (activeTab === 'Readme' && !readme && !loadingReadme) {
         if (!data.full_name) {
-            setReadme("Cannot fetch Readme: Repository path not found.");
+            setReadme("<p>Cannot fetch Readme: Repository path not found.</p>");
             return;
         }
         setLoadingReadme(true);
+        // FETCHING AS HTML NOW instead of raw markdown
         fetch(`https://api.github.com/repos/${data.full_name}/readme`, { 
-           headers: { 'Accept': 'application/vnd.github.raw' } 
+           headers: { 'Accept': 'application/vnd.github.html' } 
         })
         .then(res => {
            if (res.ok) return res.text();
            throw new Error('No Readme found');
         })
         .then(text => setReadme(text))
-        .catch(() => setReadme('No README.md file found for this project.\n\nPlease check the "General" tab for details.'))
+        .catch(() => setReadme('<p>No README.md file found for this project.</p>'))
         .finally(() => setLoadingReadme(false));
      }
   }, [activeTab, data.full_name, readme, loadingReadme]);
@@ -99,9 +100,9 @@ const ProjectDetailContent = ({ data }: { data: any }) => {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 p-4 bg-white overflow-auto relative">
+        <div className="flex-1 bg-white overflow-hidden relative">
            {activeTab === 'General' && (
-              <div className="space-y-6 animate-in fade-in duration-300">
+              <div className="space-y-6 p-4 overflow-auto h-full animate-in fade-in duration-300">
                  <div>
                     <h3 className="font-bold text-[#1A3866] border-b border-gray-200 mb-2">Description</h3>
                     <p className="text-sm text-gray-800 leading-relaxed font-sans">
@@ -137,15 +138,38 @@ const ProjectDetailContent = ({ data }: { data: any }) => {
            )}
 
            {activeTab === 'Readme' && (
-              <div className="h-full flex flex-col font-mono text-xs">
-                 <div className="bg-white border border-gray-300 p-2 h-full overflow-auto whitespace-pre-wrap select-text shadow-inner">
-                    {loadingReadme ? "Loading..." : readme}
+              <div className="h-full flex flex-col">
+                 {/* CSS Styles for the rendered Markdown */}
+                 <style>{`
+                    .readme-content { font-family: 'Tahoma', sans-serif; padding: 20px; color: #24292e; line-height: 1.6; }
+                    .readme-content h1, .readme-content h2, .readme-content h3 { border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; margin-top: 24px; margin-bottom: 16px; font-weight: 600; color: #1A3866; }
+                    .readme-content h1 { font-size: 2em; }
+                    .readme-content h2 { font-size: 1.5em; }
+                    .readme-content p { margin-bottom: 16px; font-size: 14px; }
+                    .readme-content a { color: #0366d6; text-decoration: none; }
+                    .readme-content a:hover { text-decoration: underline; }
+                    .readme-content ul, .readme-content ol { padding-left: 2em; margin-bottom: 16px; }
+                    .readme-content ul { list-style-type: disc; }
+                    .readme-content img { max-width: 100%; box-sizing: content-box; background-color: transparent; }
+                    .readme-content code { padding: 0.2em 0.4em; margin: 0; font-size: 85%; background-color: #f6f8fa; border-radius: 6px; font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace; }
+                    .readme-content pre { padding: 16px; overflow: auto; line-height: 1.45; background-color: #f6f8fa; border-radius: 6px; margin-bottom: 16px; }
+                    .readme-content pre code { padding: 0; background-color: transparent; }
+                    .readme-content blockquote { padding: 0 1em; color: #6a737d; border-left: 0.25em solid #dfe2e5; margin: 0 0 16px 0; }
+                    .readme-content table { border-spacing: 0; border-collapse: collapse; margin-bottom: 16px; width: 100%; overflow: auto; display: block; }
+                    .readme-content table th, .readme-content table td { padding: 6px 13px; border: 1px solid #dfe2e5; }
+                    .readme-content table tr:nth-child(2n) { background-color: #f6f8fa; }
+                 `}</style>
+                 <div className="bg-white border-t border-gray-200 h-full overflow-auto whitespace-normal select-text custom-scrollbar">
+                    <div 
+                        className="readme-content"
+                        dangerouslySetInnerHTML={{ __html: loadingReadme ? "<div style='padding:20px'>Loading README from GitHub...</div>" : readme }}
+                    />
                  </div>
               </div>
            )}
 
            {activeTab === 'Statistics' && (
-              <div className="grid grid-cols-2 gap-4 animate-in fade-in duration-300">
+              <div className="grid grid-cols-2 gap-4 p-4 overflow-auto h-full animate-in fade-in duration-300">
                  <div className="p-3 bg-gray-50 border border-gray-200 rounded"><div className="text-gray-500 text-xs">Stars</div><div className="text-xl font-bold text-yellow-600">★ {data.stargazers_count}</div></div>
                  <div className="p-3 bg-gray-50 border border-gray-200 rounded"><div className="text-gray-500 text-xs">Forks</div><div className="text-xl font-bold text-gray-700">⑂ {data.forks_count}</div></div>
                  <div className="p-3 bg-gray-50 border border-gray-200 rounded"><div className="text-gray-500 text-xs">Issues</div><div className="text-xl font-bold text-red-600">⚠ {data.open_issues_count}</div></div>
