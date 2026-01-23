@@ -189,34 +189,85 @@ const ProjectDetailContent = ({ data }: { data: any }) => {
 
 // --- SUB-COMPONENTS ---
 
-const MyComputerContent = () => (
-    <div className="flex h-full bg-white">
-       <SystemSidebar />
-       <div className="flex-1 bg-white p-4 overflow-auto">
-          <div className="mb-4">
-             <h2 className="font-bold text-lg mb-2 text-[#1A3866]">Hard Disk Drives</h2>
-             <div className="flex gap-8 border-t border-[#D6DFF7] pt-4">
-                <div className="flex gap-2 items-center w-[250px] cursor-pointer hover:bg-blue-50 p-2 rounded border border-transparent hover:border-blue-200">
-                   <img src="https://cdn-icons-png.flaticon.com/512/2333/2333066.png" className="w-10 h-10" alt="hdd" />
-                   <div>
-                      <div className="font-bold text-sm">Local Disk (C:)</div>
-                      <div className="text-xs text-gray-500">Free Space: 12.4 GB</div>
-                      <div className="w-full h-3 bg-gray-200 border border-gray-400 mt-1 relative">
-                         <div className="absolute left-0 top-0 h-full w-[80%] bg-blue-600"></div>
-                      </div>
-                   </div>
-                </div>
-             </div>
-          </div>
-          <div className="mb-4">
-             <h2 className="font-bold text-lg mb-2 text-[#1A3866]">Resume (PDF)</h2>
-             <div className="border-t border-[#D6DFF7] pt-4 h-[500px]">
-                <iframe src="/resume.pdf" className="w-full h-full border border-gray-300" title="Resume"></iframe>
-             </div>
-          </div>
-       </div>
-    </div>
-);
+// UPDATED: MyComputerContent with Zoom, Dark UI, and Download Option
+const MyComputerContent = () => {
+    const [zoom, setZoom] = useState(1.0);
+
+    const handleZoomIn = () => setZoom(z => Math.min(z + 0.25, 2.5));
+    const handleZoomOut = () => setZoom(z => Math.max(z - 0.25, 0.5));
+    
+    const handleDownload = () => {
+        const link = document.createElement('a');
+        link.href = '/resume.pdf';
+        link.download = 'Devvarth_Singh_Resume.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    return (
+        <div className="flex h-full bg-[#f0f0f0] font-sans">
+           <SystemSidebar />
+           <div className="flex-1 flex flex-col h-full bg-[#525659] overflow-hidden relative">
+              {/* Custom Toolbar resembling the screenshot */}
+              <div className="h-12 bg-[#323639] flex items-center justify-between px-4 shadow-md shrink-0 z-20">
+                 <div className="flex items-center gap-2 text-gray-200">
+                    <span className="text-sm font-medium">Resume.pdf</span>
+                 </div>
+                 
+                 <div className="flex items-center gap-1 bg-[#00000033] rounded p-0.5">
+                    <button onClick={handleZoomOut} className="w-8 h-8 flex items-center justify-center hover:bg-[#ffffff1a] rounded text-white text-lg rounded-full active:scale-95 transition-transform" title="Zoom Out">
+                        －
+                    </button>
+                    <div className="w-px h-5 bg-gray-600 mx-1"></div>
+                    <span className="text-xs text-white min-w-[3rem] text-center">{Math.round(zoom * 100)}%</span>
+                    <div className="w-px h-5 bg-gray-600 mx-1"></div>
+                    <button onClick={handleZoomIn} className="w-8 h-8 flex items-center justify-center hover:bg-[#ffffff1a] rounded text-white text-lg rounded-full active:scale-95 transition-transform" title="Zoom In">
+                        ＋
+                    </button>
+                 </div>
+
+                 <div className="flex items-center gap-3">
+                    <button onClick={handleDownload} className="text-gray-300 hover:text-white hover:bg-[#ffffff1a] p-2 rounded transition-colors" title="Download">
+                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                       </svg>
+                    </button>
+                    <button onClick={() => window.print()} className="text-gray-300 hover:text-white hover:bg-[#ffffff1a] p-2 rounded transition-colors" title="Print">
+                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="6 9 6 2 18 2 18 9" />
+                          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                          <rect x="6" y="14" width="12" height="8" />
+                       </svg>
+                    </button>
+                 </div>
+              </div>
+
+              {/* Document Viewport */}
+              <div className="flex-1 overflow-auto p-8 flex justify-center custom-scrollbar">
+                 <div 
+                    className="bg-white shadow-xl transition-all duration-200 origin-top"
+                    style={{ 
+                       width: `${800 * zoom}px`, // Base width for A4
+                       height: `${1132 * zoom}px`, // Base height for A4
+                       minWidth: '300px',
+                       marginBottom: '40px'
+                    }}
+                 >
+                    {/* Hiding native toolbar to show our custom one */}
+                    <embed 
+                       src="/resume.pdf#toolbar=0&navpanes=0&scrollbar=0" 
+                       type="application/pdf"
+                       className="w-full h-full"
+                    />
+                 </div>
+              </div>
+           </div>
+        </div>
+    );
+};
 
 const AboutMeContent = () => (
   <div className="flex h-full bg-[#ECE9D8] select-text">

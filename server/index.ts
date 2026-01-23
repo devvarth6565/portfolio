@@ -96,7 +96,7 @@ const setupServer = async () => {
 if (process.env.NODE_ENV !== "production") {
   (async () => {
     await setupServer();
-    const port = 5000;
+    const port = process.env.PORT || 3000;
     httpServer.listen(
       {
         port,
