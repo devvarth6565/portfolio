@@ -535,6 +535,16 @@ export default function Home() {
 
                      {(win.id === 'codesurfer' || win.id === 'techconnect' || win.id === 'github') && win.props?.url && (
                         <div className="w-full h-full bg-white flex flex-col">
+                           <div className="flex justify-end items-center bg-[#ECE9D8] border-b border-gray-300 p-1 shrink-0">
+                              <a href={win.props.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-blue-800 hover:text-blue-600 px-2 py-1 bg-white border border-gray-400 shadow-sm rounded-sm active:translate-y-px">
+                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                    <polyline points="15 3 21 3 21 9" />
+                                    <line x1="10" y1="14" x2="21" y2="3" />
+                                 </svg>
+                                 Open in new tab
+                              </a>
+                           </div>
                            <iframe src={win.props.url} className="w-full flex-1 border-none bg-white" title={win.title} />
                         </div>
                      )}
