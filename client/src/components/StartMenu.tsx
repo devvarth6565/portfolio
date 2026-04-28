@@ -44,9 +44,9 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
       {/* Header */}
       <div className="h-[60px] bg-gradient-to-r from-[#1c5fb0] to-[#4faeef] p-2 flex items-center gap-3 border-b border-[#00317d]">
         <div className="w-12 h-12 rounded border-2 border-white overflow-hidden bg-white">
-          <img 
-            src="/profile.jpg" 
-            alt="Profile" 
+          <img
+            src="/profile.jpg"
+            alt="Profile"
             className="w-full h-full object-cover"
             onError={(e) => {
               (e.target as HTMLImageElement).src = 'https://win98icons.alexmeub.com/icons/png/computer_user_pencil-0.png';
@@ -62,7 +62,7 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
       <div className="flex bg-[#D3E5FA] p-[1px] gap-[1px]">
         {/* Left Column (Programs) */}
         <div className="flex-1 bg-white p-2 flex flex-col gap-1 min-h-[350px]">
-          <button 
+          <button
             className="flex items-center gap-2 p-1 hover:bg-[#2F71CD] hover:text-white rounded text-xs text-left group"
             onClick={() => window.open('https://github.com/devvarthsingh', '_blank')}
           >
@@ -71,8 +71,8 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
               <span className="font-bold">Internet Explorer</span>
             </div>
           </button>
-          
-          <button 
+
+          <button
             className="flex items-center gap-2 p-1 hover:bg-[#2F71CD] hover:text-white rounded text-xs text-left"
             onClick={() => window.location.href = 'mailto:contact@example.com'}
           >
@@ -82,7 +82,7 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
             </div>
           </button>
 
-          <button 
+          <button
             className="flex items-center gap-2 p-1 hover:bg-[#2F71CD] hover:text-white rounded text-xs text-left"
             onClick={() => onOpenWindow('computer')}
           >
@@ -92,7 +92,7 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
             </div>
           </button>
 
-          <button 
+          <button
             className="flex items-center gap-2 p-1 hover:bg-[#2F71CD] hover:text-white rounded text-xs text-left"
             onClick={() => { onOpenWindow('terminal'); onClose(); }}
           >
@@ -112,7 +112,7 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
 
         {/* Right Column (System) */}
         <div className="w-[160px] bg-[#D3E5FA] p-2 flex flex-col gap-2 text-[#001358]">
-          <button 
+          <button
             className="flex items-center gap-2 p-1 hover:bg-[#2F71CD] hover:text-white rounded text-xs text-left font-bold"
             onClick={() => { onOpenWindow('documents'); onClose(); }}
           >
@@ -131,15 +131,15 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
             <span className="text-lg">🎵</span>
             <span>My Music</span>
           </button>
-          
+
           <div className="my-1 border-t border-[#91B0DF]" />
-          
+
           <button className="flex items-center gap-2 p-1 hover:bg-[#2F71CD] hover:text-white rounded text-xs text-left font-bold opacity-60">
             <span className="text-lg">🛠️</span>
             <span>Control Panel</span>
           </button>
-          
-          <button 
+
+          <button
             className="flex items-center gap-2 p-1 hover:bg-[#2F71CD] hover:text-white rounded text-xs text-left font-bold mt-4"
             onClick={() => {
               onOpenWindow('terminal');
@@ -154,14 +154,14 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
 
       {/* Footer */}
       <div className="h-[45px] bg-gradient-to-r from-[#1c5fb0] to-[#4faeef] p-2 flex items-center justify-end gap-4 border-t border-[#00317d]">
-        <button 
+        <button
           className="flex items-center gap-1 text-white text-xs hover:brightness-110"
           onClick={() => alert("Logging off...")}
         >
           <div className="bg-[#F6A300] w-5 h-5 flex items-center justify-center rounded">🔑</div>
           <span>Log Off</span>
         </button>
-        <button 
+        <button
           className="flex items-center gap-1 text-white text-xs hover:brightness-110"
           onClick={() => {
             document.body.style.filter = 'grayscale(100%)';
