@@ -10,7 +10,7 @@ interface DesktopIconProps {
 
 export function DesktopIcon({ label, icon, onDoubleClick, selected, onClick }: DesktopIconProps) {
   return (
-    <div 
+    <div
       className={`desktop-icon ${selected ? 'selected' : ''}`}
       onDoubleClick={onDoubleClick}
       onClick={onClick}

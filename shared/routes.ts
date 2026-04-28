@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertProjectSchema, projects } from './schema';
+import { projectSchema } from './schema';
 
 export const errorSchemas = {
   validation: z.object({
@@ -20,14 +20,14 @@ export const api = {
       method: 'GET' as const,
       path: '/api/projects',
       responses: {
-        200: z.array(z.custom<typeof projects.$inferSelect>()),
+        200: z.array(projectSchema),
       },
     },
     get: {
       method: 'GET' as const,
       path: '/api/projects/:id',
       responses: {
-        200: z.custom<typeof projects.$inferSelect>(),
+        200: projectSchema,
         404: errorSchemas.notFound,
       },
     },

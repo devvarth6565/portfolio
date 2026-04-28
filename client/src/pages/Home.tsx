@@ -417,7 +417,7 @@ export default function Home() {
          audio.play().catch(() => { }); // Silent catch
       };
       window.addEventListener('click', enableAudio, { once: true });
-      return () => window.removeEventListener('click', enableAudio, { once: true });
+      return () => window.removeEventListener('click', enableAudio);
    }, []);
 
    // Window Management
@@ -514,7 +514,7 @@ export default function Home() {
                      {win.id === 'computer' && <MyComputerContent />}
                      {win.id === 'about' && <AboutMeContent />}
                      {win.id === 'terminal' && <TerminalContent />}
-                     
+
                      {(win.id === 'codesurfer' || win.id === 'techconnect' || win.id === 'github') && win.props?.url && (
                         <div className="w-full h-full bg-white flex flex-col">
                            <iframe src={win.props.url} className="w-full flex-1 border-none bg-white" title={win.title} />
