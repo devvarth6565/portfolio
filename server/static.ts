@@ -1,16 +1,15 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-// ❌ Delete these lines:
-// import { fileURLToPath } from "url";
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+// ✅ This recreates __dirname safely for your Vercel ES Module environment
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export function serveStatic(app: Express) {
-  // ✅ Node.js CommonJS provides __dirname globally.
-  // (Note: If TypeScript throws a red underline here, ensure you have `@types/node` installed, 
-  // or simply add // @ts-ignore on the line above it).
+  // We can now safely use __dirname just like we used to in older Node versions
   const distPath = path.resolve(__dirname, "../dist/public");
 
   if (!fs.existsSync(distPath)) {
