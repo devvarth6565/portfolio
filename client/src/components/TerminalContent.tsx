@@ -13,7 +13,11 @@ If you are new to terminals, type 'help' and press Enter to see available comman
 Type 'game' to play a quick interactive mini-game.
 `;
 
-export const TerminalContent = () => {
+interface TerminalProps {
+  onCommand?: (cmd: string) => boolean;
+}
+
+export const TerminalContent = ({ onCommand }: TerminalProps) => {
   const [history, setHistory] = useState<CommandHistory[]>([]);
   const [input, setInput] = useState('');
   const [currentPath, setCurrentPath] = useState('C:\\Documents and Settings\\Dev');
@@ -75,18 +79,24 @@ export const TerminalContent = () => {
         case 'help':
           output = (
             <div className="flex flex-col gap-1 mt-1 mb-1">
-              <span className="text-[#00ff00]">--- Available Commands ---</span>
-              <span><span className="font-bold text-white">HELP</span>       Shows this list of commands</span>
-              <span><span className="font-bold text-white">ABOUT</span>      Shows developer information</span>
-              <span><span className="font-bold text-white">GAME</span>       Play a quick number guessing game</span>
-              <span><span className="font-bold text-white">CLEAR/CLS</span>  Clears the terminal screen</span>
-              <span><span className="font-bold text-white">DATE</span>       Displays the current date</span>
-              <span><span className="font-bold text-white">DIR/LS</span>     Displays a list of files and subdirectories</span>
-              <span><span className="font-bold text-white">ECHO</span>       Displays your message back to you</span>
-              <span><span className="font-bold text-white">SYSTEMINFO</span> Displays system hardware specifications</span>
-              <span><span className="font-bold text-white">VER</span>        Displays the Windows version</span>
-              <span><span className="font-bold text-white">WHOAMI</span>     Displays the current user</span>
-              <span className="text-[#00ff00] mt-1">Hint: Type 'game' to have some fun, or 'about' to learn about me!</span>
+              <span className="text-[#00ff00]">--- Navigation Commands ---</span>
+              <span><span className="font-bold text-white w-24 inline-block">ABOUT</span>      Opens the About Me section</span>
+              <span><span className="font-bold text-white w-24 inline-block">RESUME</span>     Opens my interactive Resume</span>
+              <span><span className="font-bold text-white w-24 inline-block">CODESURFER</span> Opens the CodeSurfer Live project</span>
+              <span><span className="font-bold text-white w-24 inline-block">TECHCONNECT</span>Opens the techConnect project</span>
+              <span><span className="font-bold text-white w-24 inline-block">GITHUB</span>     Opens my GitHub profile</span>
+              <br/>
+              <span className="text-[#00ff00]">--- System Commands ---</span>
+              <span><span className="font-bold text-white w-24 inline-block">HELP</span>       Shows this list of commands</span>
+              <span><span className="font-bold text-white w-24 inline-block">GAME</span>       Play a quick interactive mini-game</span>
+              <span><span className="font-bold text-white w-24 inline-block">CLEAR/CLS</span>  Clears the terminal screen</span>
+              <span><span className="font-bold text-white w-24 inline-block">DATE</span>       Displays the current date</span>
+              <span><span className="font-bold text-white w-24 inline-block">DIR/LS</span>     Displays a list of files and directories</span>
+              <span><span className="font-bold text-white w-24 inline-block">ECHO</span>       Displays your message back to you</span>
+              <span><span className="font-bold text-white w-24 inline-block">SYSTEMINFO</span> Displays system hardware specs</span>
+              <span><span className="font-bold text-white w-24 inline-block">VER</span>        Displays the Windows version</span>
+              <span><span className="font-bold text-white w-24 inline-block">WHOAMI</span>     Displays the current user</span>
+              <span className="text-[#00ff00] mt-1">Hint: Try typing 'resume' or 'codesurfer' to navigate the desktop!</span>
             </div>
           );
           break;
@@ -97,9 +107,7 @@ export const TerminalContent = () => {
           setAttempts(0);
           output = "🎮 Let's play a game!\nI'm thinking of a number between 1 and 10.\nType your guess (or type 'quit' to exit):";
           break;
-        case 'about':
-          output = 'Devvarth Singh - Full Stack Developer & AI Enthusiast. Building Autonomous AI Agents & Scalable Web Apps.';
-          break;
+
         case 'cls':
         case 'clear':
           setHistory([]);
@@ -157,7 +165,15 @@ export const TerminalContent = () => {
           }
           break;
         default:
-          output = `'${mainCmd}' is not recognized as an internal or external command, operable program or batch file.\nType 'help' to see a list of available commands.`;
+          let handled = false;
+          if (onCommand) {
+            handled = onCommand(mainCmd);
+          }
+          if (handled) {
+            output = `Opening ${mainCmd}...`;
+          } else {
+            output = `'${mainCmd}' is not recognized as an internal or external command, operable program or batch file.\nType 'help' to see a list of available commands.`;
+          }
       }
 
       setHistory(prev => [...prev, { command: `${currentPath}>${cmd}`, output }]);

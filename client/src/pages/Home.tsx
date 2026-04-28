@@ -513,7 +513,25 @@ export default function Home() {
 
                      {win.id === 'computer' && <MyComputerContent />}
                      {win.id === 'about' && <AboutMeContent />}
-                     {win.id === 'terminal' && <TerminalContent />}
+                     {win.id === 'terminal' && <TerminalContent onCommand={(cmd) => {
+                        let handled = false;
+                        if (cmd === 'about') { openWindow('about', 'About Me'); handled = true; }
+                        else if (cmd === 'resume') { openWindow('computer', 'My Computer'); handled = true; }
+                        else if (cmd === 'codesurfer') { openWindow('codesurfer', 'CodeSurfer Live', { url: 'https://code-surfer-five.vercel.app/' }); handled = true; }
+                        else if (cmd === 'techconnect') { openWindow('techconnect', 'techConnect', { url: 'http://3.106.246.152/' }); handled = true; }
+                        else if (cmd === 'github') { openWindow('github', 'GitHub Profile', { url: 'https://github.com/devvarth6565' }); handled = true; }
+                        else {
+                           const matchedProject = projects?.find((p: any) => 
+                              ((p as any).name || (p as any).title || '').toLowerCase().includes(cmd.toLowerCase())
+                           );
+                           if (matchedProject) {
+                              const pTitle = matchedProject.name || (matchedProject as any).title || "Untitled";
+                              openWindow(`project-${matchedProject.id}`, pTitle, { projectData: matchedProject });
+                              handled = true;
+                           }
+                        }
+                        return handled;
+                     }} />}
 
                      {(win.id === 'codesurfer' || win.id === 'techconnect' || win.id === 'github') && win.props?.url && (
                         <div className="w-full h-full bg-white flex flex-col">
