@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { projectSchema } from './schema';
+import { projectSchema } from './schema.js';
 
 export const errorSchemas = {
   validation: z.object({
