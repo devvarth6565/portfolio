@@ -1,12 +1,16 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// ❌ Delete these lines:
+// import { fileURLToPath } from "url";
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 export function serveStatic(app: Express) {
+  // ✅ Node.js CommonJS provides __dirname globally.
+  // (Note: If TypeScript throws a red underline here, ensure you have `@types/node` installed, 
+  // or simply add // @ts-ignore on the line above it).
   const distPath = path.resolve(__dirname, "../dist/public");
 
   if (!fs.existsSync(distPath)) {
@@ -19,7 +23,6 @@ export function serveStatic(app: Express) {
   app.use(express.static(distPath));
 
   // 2. Fallback to index.html for everything else (SPA Support)
-  // We removed the "*" string here to fix the "Missing parameter name" error.
   app.use((_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });

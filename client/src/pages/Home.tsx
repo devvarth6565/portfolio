@@ -7,6 +7,7 @@ import { MediaPlayer } from '@/components/MediaPlayer';
 import { StartMenu } from '@/components/StartMenu';
 import { AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
+import { TerminalContent } from '@/components/TerminalContent';
 
 // Ensure this path matches your hooks folder
 import { useGitHubProjects } from '@/hooks/useGitHubProjects';
@@ -399,7 +400,8 @@ export default function Home() {
   const [windows, setWindows] = useState<Record<string, WindowState>>({
     computer: { id: 'computer', title: 'My Computer', isOpen: false, minimized: false, zIndex: 10 },
     documents: { id: 'documents', title: 'My Documents', isOpen: false, minimized: false, zIndex: 10 },
-    about: { id: 'about', title: 'About Me', isOpen: false, minimized: false, zIndex: 10 }
+    about: { id: 'about', title: 'About Me', isOpen: false, minimized: false, zIndex: 10 },
+    terminal: { id: 'terminal', title: 'Command Prompt', isOpen: false, minimized: false, zIndex: 10 }
   });
   
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
@@ -477,6 +479,7 @@ export default function Home() {
          <DesktopIcon label="My Computer" icon={<img src="https://win98icons.alexmeub.com/icons/png/computer-5.png" className="w-full h-full" alt="pc" />} selected={selectedIcon === 'computer'} onClick={() => setSelectedIcon('computer')} onDoubleClick={() => openWindow('computer', 'My Computer')} />
          <DesktopIcon label="My Documents" icon={<img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" className="w-full h-full" alt="docs" />} selected={selectedIcon === 'documents'} onClick={() => setSelectedIcon('documents')} onDoubleClick={() => openWindow('documents', 'My Documents')} />
          <DesktopIcon label="About Me" icon={<img src="https://win98icons.alexmeub.com/icons/png/address_book_user.png" className="w-full h-full" alt="about" />} selected={selectedIcon === 'about'} onClick={() => setSelectedIcon('about')} onDoubleClick={() => openWindow('about', 'About Me')} />
+         <DesktopIcon label="Command Prompt" icon={<img src="https://win98icons.alexmeub.com/icons/png/console_prompt-0.png" className="w-full h-full" alt="cmd" />} selected={selectedIcon === 'terminal'} onClick={() => setSelectedIcon('terminal')} onDoubleClick={() => openWindow('terminal', 'Command Prompt')} />
          
          {/* CodeSurfer Live Icon */}
          <DesktopIcon label="CodeSurfer Live" icon={<img src="https://win98icons.alexmeub.com/icons/png/bar_graph_default-1.png" className="w-full h-full" alt="web" />} selected={selectedIcon === 'codesurfer'} onClick={() => setSelectedIcon('codesurfer')} onDoubleClick={() => window.open('https://code-surfer-five.vercel.app/', '_blank')} />
@@ -503,6 +506,7 @@ export default function Home() {
                icon={
                  win.id === 'computer' ? "https://cdn-icons-png.flaticon.com/512/2889/2889279.png" : 
                  win.id === 'about' ? "https://cdn-icons-png.flaticon.com/512/3237/3237472.png" :
+                 win.id === 'terminal' ? "https://win98icons.alexmeub.com/icons/png/console_prompt-0.png" :
                  "https://cdn-icons-png.flaticon.com/512/3767/3767084.png"
                }
              >
@@ -510,6 +514,7 @@ export default function Home() {
                 
                 {win.id === 'computer' && <MyComputerContent />}
                 {win.id === 'about' && <AboutMeContent />}
+                {win.id === 'terminal' && <TerminalContent />}
                 
                 {win.id === 'documents' && (
                     <MyDocumentsContent 

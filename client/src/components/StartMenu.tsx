@@ -92,6 +92,16 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
             </div>
           </button>
 
+          <button 
+            className="flex items-center gap-2 p-1 hover:bg-[#2F71CD] hover:text-white rounded text-xs text-left"
+            onClick={() => { onOpenWindow('terminal'); onClose(); }}
+          >
+            <img src="https://win98icons.alexmeub.com/icons/png/console_prompt-0.png" className="w-8 h-8" alt="cmd" />
+            <div className="flex flex-col">
+              <span className="font-bold">Command Prompt</span>
+            </div>
+          </button>
+
           <div className="mt-auto pt-2 border-t border-gray-300">
             <button className="w-full flex items-center justify-between p-2 hover:bg-[#2F71CD] hover:text-white rounded text-xs font-bold">
               <span>All Programs</span>
@@ -132,8 +142,8 @@ export function StartMenu({ isOpen, onClose, onOpenWindow }: StartMenuProps) {
           <button 
             className="flex items-center gap-2 p-1 hover:bg-[#2F71CD] hover:text-white rounded text-xs text-left font-bold mt-4"
             onClick={() => {
-              const cmd = prompt("Type a command:");
-              if (cmd) alert(`Running: ${cmd} (Easter Egg!)`);
+              onOpenWindow('terminal');
+              onClose();
             }}
           >
             <span className="text-lg">🏃</span>
