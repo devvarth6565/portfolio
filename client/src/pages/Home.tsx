@@ -406,19 +406,14 @@ export default function Home() {
    const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
    const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
    const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
-   const [audioAllowed, setAudioAllowed] = useState(false);
+   const [showVirusPopup, setShowVirusPopup] = useState(true);
 
-   // One-time interaction listener for audio
-   useEffect(() => {
-      const enableAudio = () => {
-         setAudioAllowed(true);
-         const audio = new Audio('/startup.mp3');
-         audio.volume = 0.4;
-         audio.play().catch(() => { }); // Silent catch
-      };
-      window.addEventListener('click', enableAudio, { once: true });
-      return () => window.removeEventListener('click', enableAudio);
-   }, []);
+   const handleDismissVirus = () => {
+      setShowVirusPopup(false);
+      const audio = new Audio('/startup.mp3');
+      audio.volume = 0.4;
+      audio.play().catch(() => { }); // Silent catch
+   };
 
    // Window Management
    const openWindow = useCallback((id: string, title?: string, props?: any) => {
@@ -580,10 +575,42 @@ export default function Home() {
 
          <Taskbar openWindows={Object.values(windows).filter(w => w.isOpen)} activeWindowId={activeWindowId} onWindowClick={(id) => focusWindow(id)} onStartClick={() => setIsStartMenuOpen(!isStartMenuOpen)} />
 
-         {/* Interaction Overlay to Fix Audio */}
-         {!audioAllowed && (
-            <div className="absolute top-4 right-4 bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-2 rounded text-xs z-50 animate-bounce pointer-events-none">
-               Click anywhere to enable audio...
+         {/* Virus Popup Modal / Initial Interaction */}
+         {showVirusPopup && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm pointer-events-auto select-none">
+               <div className="bg-[#ece9d8] border-[3px] border-[#0055ea] rounded-t-lg shadow-2xl w-[400px] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+                  {/* Title Bar */}
+                  <div className="bg-gradient-to-r from-[#0058e6] to-[#3a93ff] px-2 py-1 flex items-center justify-between text-white">
+                     <div className="flex items-center gap-2">
+                        <img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png" alt="error" className="w-4 h-4 drop-shadow-sm" />
+                        <span className="font-bold text-sm tracking-wide drop-shadow-sm">Windows Security Alert</span>
+                     </div>
+                     <button onClick={handleDismissVirus} className="bg-[#ea3c2a] hover:bg-[#ff5544] text-white w-5 h-5 rounded-sm flex items-center justify-center border border-white/40 active:bg-[#c92f20]">
+                        <span className="text-xs font-bold leading-none select-none">×</span>
+                     </button>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="p-5 flex gap-4 bg-white border-b border-gray-300 flex-1">
+                     <img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png" alt="virus" className="w-10 h-10 shrink-0 mt-1" />
+                     <div className="flex flex-col gap-3">
+                        <p className="text-[15px] text-black font-bold tracking-tight">Critical Threat Detected!</p>
+                        <p className="text-sm text-gray-700 leading-relaxed">
+                           Windows has detected a malicious software (Win32:Agentic-AI) attempting to access your system. Immediate action is required.
+                        </p>
+                     </div>
+                  </div>
+
+                  {/* Footer / Buttons */}
+                  <div className="bg-[#ece9d8] p-3 flex justify-end gap-2">
+                     <button onClick={handleDismissVirus} className="px-4 py-1.5 bg-[#ece9d8] border border-gray-400 rounded text-xs shadow-[inset_1px_1px_0px_#fff,inset_-1px_-1px_0px_#a0a0a0] active:shadow-[inset_1px_1px_0px_#a0a0a0,inset_-1px_-1px_0px_#fff] hover:border-[#0058e6]">
+                        Download Antivirus
+                     </button>
+                     <button onClick={handleDismissVirus} className="px-4 py-1.5 bg-[#ece9d8] border border-gray-400 rounded text-xs font-bold shadow-[inset_1px_1px_0px_#fff,inset_-1px_-1px_0px_#a0a0a0] active:shadow-[inset_1px_1px_0px_#a0a0a0,inset_-1px_-1px_0px_#fff] hover:border-[#0058e6] focus:ring-1 focus:ring-black focus:outline-none">
+                        Remove Virus
+                     </button>
+                  </div>
+               </div>
             </div>
          )}
       </div>
